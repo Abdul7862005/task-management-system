@@ -21,6 +21,9 @@ const startServer = async () => {
     await connectDB();
   } catch (err) {
     console.error('connectDB threw an error:', err);
+    // If DB connection can't be established after retries, exit so the platform
+    // (Render) restarts the service and avoids serving requests that will fail.
+    process.exit(1);
   }
 
   const app = express();
