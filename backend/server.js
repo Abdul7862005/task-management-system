@@ -8,6 +8,14 @@ const profileRoutes = require('./routes/profileRoutes');
 
 dotenv.config();
 
+// Global error handlers to surface crash reasons in logs and avoid silent exits
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception thrown:', err);
+});
+
 connectDB();
 
 const app = express();
