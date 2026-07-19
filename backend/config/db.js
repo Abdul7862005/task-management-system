@@ -26,7 +26,11 @@ const connectDB = async () => {
     }
   }
 
-  console.error(`MongoDB connection failed after ${maxAttempts} attempts. Application will continue to run but DB operations may fail until connection is restored.`);
+  const msg = `MongoDB connection failed after ${maxAttempts} attempts.`;
+  console.error(msg);
+  // Throw so the caller can decide whether to start the server. This prevents the app
+  // from accepting requests that will immediately time out when mongoose isn't connected.
+  throw new Error(msg);
 };
 
 module.exports = connectDB;
