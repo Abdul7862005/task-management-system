@@ -252,7 +252,7 @@ body {
   text-decoration: underline;
 }
 
-/* ===== NAVBAR ===== */
+/* ===== NAVBAR (legacy, unused now that sidebar exists, kept harmless) ===== */
 
 .navbar {
   display: flex;
@@ -463,6 +463,7 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 28px;
+  gap: 12px;
 }
 
 .tasks-header h2 {
@@ -478,6 +479,7 @@ body {
   gap: 8px;
   width: auto;
   padding: 12px 22px;
+  flex-shrink: 0;
 }
 
 .tasks-list {
@@ -553,6 +555,7 @@ body {
 .task-card-actions {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .badge {
@@ -563,6 +566,7 @@ body {
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .badge-high {
@@ -608,6 +612,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-icon:hover {
@@ -662,6 +667,7 @@ body {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 6px;
+  flex-wrap: wrap;
 }
 
 .form-actions .btn {
@@ -714,22 +720,8 @@ body {
   padding: 11px 22px;
 }
 
-@media (max-width: 768px) {
-  .profile-grid,
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+/* ===== SIDEBAR LAYOUT ===== */
 
-  .navbar-links {
-    display: none;
-  }
-
-  .tasks-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-}
 .app-shell {
   display: flex;
   min-height: 100vh;
@@ -817,42 +809,8 @@ body {
   overflow-y: auto;
 }
 
-@media (max-width: 900px) {
-  .app-shell {
-    flex-direction: column;
-  }
+/* ===== PLANS ===== */
 
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    flex-direction: row;
-    align-items: center;
-    padding: 12px 16px;
-  }
-
-  .sidebar-brand {
-    border-bottom: none;
-    padding: 0;
-    flex: 1;
-  }
-
-  .sidebar-nav {
-    flex-direction: row;
-    padding: 0;
-  }
-
-  .sidebar-footer {
-    border-top: none;
-    padding: 0;
-    display: flex;
-    align-items: center;
-  }
-
-  .sidebar-user span {
-    display: none;
-  }
-}
 .plan-tabs {
   display: inline-flex;
   gap: 6px;
@@ -862,6 +820,8 @@ body {
   border-radius: 14px;
   border: 1px solid var(--gray-200);
   box-shadow: var(--shadow-sm);
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .plan-tab {
@@ -878,6 +838,7 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .plan-tab:hover {
@@ -895,6 +856,7 @@ body {
   display: flex;
   gap: 16px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .plan-summary-item {
@@ -931,6 +893,7 @@ body {
   font-weight: 600;
   margin-top: 2px;
 }
+
 .weekly-fields {
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
@@ -953,12 +916,18 @@ body {
   border-radius: 20px;
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
 }
+
+/* ===== CALENDAR ===== */
+
 .calendar-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .calendar-nav {
@@ -1006,6 +975,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  overflow: hidden;
 }
 
 .calendar-cell:hover {
@@ -1083,6 +1053,8 @@ body {
 .legend-dot.yellow { background: #f59e0b; }
 .legend-dot.green { background: #10b981; }
 .legend-dot.gray { background: var(--gray-400); }
+
+/* ===== MODAL ===== */
 
 .modal-overlay {
   position: fixed;
@@ -1174,6 +1146,7 @@ body {
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .modal-task-time {
@@ -1191,8 +1164,148 @@ body {
   flex-wrap: wrap;
 }
 
-@media (max-width: 640px) {
-  .calendar-cell { min-height: 64px; }
-  .day-pill { font-size: 9px; }
-  .calendar-weekday { font-size: 10px; }
+/* ======================================================= */
+/* ===== RESPONSIVE / MOBILE FIXES (single source) ====== */
+/* ======================================================= */
+
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .sidebar-brand {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 8px 12px;
+    gap: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-link {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+
+  .sidebar-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-top: 1px solid var(--gray-100);
+  }
+
+  .sidebar-user {
+    margin-bottom: 0;
+  }
+
+  .sidebar-user span {
+    display: none;
+  }
+
+  .sidebar-footer .btn-logout {
+    width: auto;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .dashboard-header h2,
+  .tasks-header h2 {
+    font-size: 24px;
+  }
+
+  .tasks-header {
+    flex-wrap: wrap;
+  }
+
+  .profile-grid,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .task-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-card-actions {
+    width: 100%;
+  }
+
+  .calendar-grid {
+    padding: 8px;
+    gap: 3px;
+  }
+
+  .calendar-cell {
+    min-height: 56px;
+    padding: 4px;
+  }
+
+  .calendar-weekday {
+    font-size: 9px;
+    padding-bottom: 4px;
+  }
+
+  .day-pill {
+    font-size: 8px;
+    padding: 1px 4px;
+  }
+
+  .calendar-month-label {
+    min-width: 0;
+    font-size: 15px;
+  }
+
+  .plan-tabs {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 32px 24px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card p {
+    font-size: 24px;
+  }
+
+  .modal-panel {
+    max-width: 100%;
+  }
 }
