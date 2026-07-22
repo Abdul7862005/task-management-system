@@ -77,7 +77,6 @@ const getTasks = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
 const updateTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -92,10 +91,10 @@ const updateTask = async (req, res) => {
 
     const { title, description, priority, status, planType, dayOfWeek, time, recurrence, dueDate } = req.body;
 
-    const isOneTimeWeekly = task.planType === 'Weekly' && task.recurrence === 'Once';
+    const isOneTime = task.planType === 'OneTime';
     const willBeCompleted = status === 'Completed';
 
-    if (isOneTimeWeekly && willBeCompleted) {
+    if (isOneTime && willBeCompleted) {
       await task.deleteOne();
       return res.status(200).json({
         message: 'One-time task completed and removed',

@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { getTasks } from '../services/taskService';
 import MainLayout from '../layouts/MainLayout';
 import { formatTime } from '../utils/dateHelpers';
-import { Sun, CalendarDays, CalendarRange, Flame, ListChecks, Repeat } from 'lucide-react';
+import { Sun, CalendarDays, CalendarRange, CalendarClock, Flame, ListChecks, Repeat } from 'lucide-react';
 
 const TABS = [
   { key: 'Daily', label: 'Daily', icon: Sun },
   { key: 'Weekly', label: 'Weekly', icon: CalendarDays },
   { key: 'Monthly', label: 'Monthly', icon: CalendarRange },
+  { key: 'OneTime', label: 'One-Time', icon: CalendarClock },
 ];
 
 function Plans() {
@@ -37,18 +38,20 @@ function Plans() {
     Daily: getBucket('Daily'),
     Weekly: getBucket('Weekly'),
     Monthly: getBucket('Monthly'),
+    OneTime: getBucket('OneTime'),
   };
 
   const filteredTasks = bucketMap[activeTab];
 
   const overdueInBucket = filteredTasks.filter(
-    (t) => t.status !== 'Completed' && t.planType === 'Monthly' && new Date(t.dueDate) < new Date()
+    (t) => t.status !== 'Completed' && (t.planType === 'Monthly' || t.planType === 'OneTime') && new Date(t.dueDate) < new Date()
   ).length;
 
   const emptyMessages = {
     Daily: 'No daily tasks yet. Add one from the Tasks page.',
     Weekly: 'No weekly tasks yet.',
     Monthly: 'No monthly tasks yet.',
+    OneTime: 'No one-time tasks yet.',
   };
 
   const formatDate = (dateString) =>
@@ -91,7 +94,7 @@ function Plans() {
         })}
       </div>
 
-      {!loading && !error && activeTab === 'Monthly' && (
+      {!loading && !error && (activeTab === 'Monthly' || activeTab === 'OneTime') && (
         <div className="plan-summary">
           <div className="plan-summary-item">
             <div className="plan-summary-icon" style={{ background: '#eef2ff', color: 'var(--primary)' }}>
@@ -126,7 +129,7 @@ function Plans() {
             filteredTasks.map((task) => {
               const isOverdue =
                 task.status !== 'Completed' &&
-                task.planType === 'Monthly' &&
+                (task.planType === 'Monthly' || task.planType === 'OneTime') &&
                 new Date(task.dueDate) < new Date();
 
               return (
@@ -148,22 +151,16 @@ function Plans() {
                     </span>
 
                     {task.planType === 'Weekly' ? (
-                      task.recurrence === 'Once' ? (
-                        <span className={isOverdue ? 'task-due overdue' : 'task-due'}>
-                          {formatDate(task.dueDate)}
-                          {task.time && ` at ${formatTime(task.time)}`}
-                        </span>
-                      ) : (
-                        <span className="recurrence-badge">
-                          <Repeat size={13} />
-                          {task.recurrence === 'Biweekly' ? 'Every 2 weeks' : 'Every week'} on{' '}
-                          {task.dayOfWeek}
-                          {task.time && ` at ${formatTime(task.time)}`}
-                        </span>
-                      )
-                    ) : task.planType === 'Monthly' ? (
+                      <span className="recurrence-badge">
+                        <Repeat size={13} />
+                        {task.recurrence === 'Biweekly' ? 'Every 2 weeks' : 'Every week'} on{' '}
+                        {task.dayOfWeek}
+                        {task.time && ` at ${formatTime(task.time)}`}
+                      </span>
+                    ) : task.planType === 'Monthly' || task.planType === 'OneTime' ? (
                       <span className={isOverdue ? 'task-due overdue' : 'task-due'}>
-                        Due: {formatDate(task.dueDate)}
+                        {formatDate(task.dueDate)}
+                        {task.time && ` at ${formatTime(task.time)}`}
                       </span>
                     ) : null}
                   </div>

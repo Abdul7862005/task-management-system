@@ -43,10 +43,10 @@ export const getOccurrencesForMonth = (tasks, year, month) => {
   };
 
   tasks.forEach((task) => {
-    if (task.planType === 'Monthly') {
-      addOccurrence(new Date(task.dueDate), task);
-      return;
-    }
+    if (task.planType === 'Monthly' || task.planType === 'OneTime') {
+  addOccurrence(new Date(task.dueDate), task);
+  return;
+}
 
     if (task.planType === 'Daily') {
       const start = new Date(task.createdAt);

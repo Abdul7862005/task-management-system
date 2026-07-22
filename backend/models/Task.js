@@ -17,7 +17,6 @@ const taskSchema = new mongoose.Schema(
       enum: ['Low', 'Medium', 'High'],
       default: 'Medium',
     },
-
     status: {
       type: String,
       enum: ['Pending', 'In Progress', 'Completed'],
@@ -25,7 +24,7 @@ const taskSchema = new mongoose.Schema(
     },
     planType: {
       type: String,
-      enum: ['Daily', 'Weekly', 'Monthly'],
+      enum: ['Daily', 'Weekly', 'Monthly', 'OneTime'],
       default: 'Daily',
     },
     dayOfWeek: {
@@ -38,7 +37,7 @@ const taskSchema = new mongoose.Schema(
     },
     recurrence: {
       type: String,
-      enum: ['Weekly', 'Biweekly','Once'],
+      enum: ['Weekly', 'Biweekly'],
       default: 'Weekly',
     },
     dueDate: {
