@@ -148,12 +148,19 @@ function Plans() {
                     </span>
 
                     {task.planType === 'Weekly' ? (
-                      <span className="recurrence-badge">
-                        <Repeat size={13} />
-                        {task.recurrence === 'Biweekly' ? 'Every 2 weeks' : 'Every week'} on{' '}
-                        {task.dayOfWeek}
-                        {task.time && ` at ${formatTime(task.time)}`}
-                      </span>
+                      task.recurrence === 'Once' ? (
+                        <span className={isOverdue ? 'task-due overdue' : 'task-due'}>
+                          {formatDate(task.dueDate)}
+                          {task.time && ` at ${formatTime(task.time)}`}
+                        </span>
+                      ) : (
+                        <span className="recurrence-badge">
+                          <Repeat size={13} />
+                          {task.recurrence === 'Biweekly' ? 'Every 2 weeks' : 'Every week'} on{' '}
+                          {task.dayOfWeek}
+                          {task.time && ` at ${formatTime(task.time)}`}
+                        </span>
+                      )
                     ) : task.planType === 'Monthly' ? (
                       <span className={isOverdue ? 'task-due overdue' : 'task-due'}>
                         Due: {formatDate(task.dueDate)}

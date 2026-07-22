@@ -59,7 +59,14 @@ export const getOccurrencesForMonth = (tasks, year, month) => {
       return;
     }
 
-    if (task.planType === 'Weekly' && task.dayOfWeek) {
+    if (task.planType === 'Weekly') {
+      if (task.recurrence === 'Once') {
+        addOccurrence(new Date(task.dueDate), task);
+        return;
+      }
+
+      if (!task.dayOfWeek) return;
+
       const targetDayIndex = DAY_NAMES.indexOf(task.dayOfWeek);
       const created = new Date(task.createdAt);
       created.setHours(0, 0, 0, 0);

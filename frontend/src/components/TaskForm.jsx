@@ -20,11 +20,16 @@ function TaskForm({ initialData, onSubmit, onCancel }) {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
+  const isOneTimeWeekly = formData.planType === 'Weekly' && formData.recurrence === 'Once';
+
   useEffect(() => {
-    if (formData.planType === 'Daily' || formData.planType === 'Weekly') {
+    if (formData.planType === 'Daily') {
       setFormData((prev) => ({ ...prev, dueDate: getToday() }));
     }
-  }, [formData.planType]);
+    if (formData.planType === 'Weekly' && formData.recurrence !== 'Once') {
+      setFormData((prev) => ({ ...prev, dueDate: getToday() }));
+    }
+  }, [formData.planType, formData.recurrence]);
 
   const handleChange = (e) => {
     setFormData({
@@ -48,7 +53,12 @@ function TaskForm({ initialData, onSubmit, onCancel }) {
     }
 
     if (formData.planType === 'Weekly' && !formData.time) {
-      setError('Please pick a time for the weekly task');
+      setError('Please pick a time');
+      return;
+    }
+
+    if (isOneTimeWeekly && !formData.dueDate) {
+      setError('Please pick a date for this one-time task');
       return;
     }
 
@@ -122,36 +132,60 @@ function TaskForm({ initialData, onSubmit, onCancel }) {
 
         {formData.planType === 'Weekly' && (
           <div className="weekly-fields">
-            <div className="form-row">
-              <div className="form-group">
-                <label>Day of Week</label>
-                <select name="dayOfWeek" value={formData.dayOfWeek} onChange={handleChange}>
-                  {DAYS.map((day) => (
-                    <option key={day} value={day}>
-                      {day}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Time</label>
-                <input
-                  type="time"
-                  name="time"
-                  value={formData.time}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
             <div className="form-group">
               <label>Repeats</label>
               <select name="recurrence" value={formData.recurrence} onChange={handleChange}>
                 <option value="Weekly">Every week</option>
                 <option value="Biweekly">Every 2 weeks (Biweekly)</option>
+                <option value="Once">Others (one-time task, auto-removes when completed)</option>
               </select>
             </div>
+
+            {isOneTimeWeekly ? (
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Date</label>
+                  <input
+                    type="date"
+                    name="dueDate"
+                    value={formData.dueDate}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Time</label>
+                  <input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Day of Week</label>
+                  <select name="dayOfWeek" value={formData.dayOfWeek} onChange={handleChange}>
+                    {DAYS.map((day) => (
+                      <option key={day} value={day}>
+                        {day}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Time</label>
+                  <input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
 
