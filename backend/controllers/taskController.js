@@ -92,6 +92,18 @@ const updateTask = async (req, res) => {
 
     const { title, description, priority, status, planType, dayOfWeek, time, recurrence, dueDate } = req.body;
 
+    const isOneTimeWeekly = task.planType === 'Weekly' && task.recurrence === 'Once';
+    const willBeCompleted = status === 'Completed';
+
+    if (isOneTimeWeekly && willBeCompleted) {
+      await task.deleteOne();
+      return res.status(200).json({
+        message: 'One-time task completed and removed',
+        deleted: true,
+        taskId: req.params.id,
+      });
+    }
+
     if (title !== undefined) task.title = title;
     if (description !== undefined) task.description = description;
     if (priority !== undefined) task.priority = priority;

@@ -38,7 +38,7 @@ const taskSchema = new mongoose.Schema(
     },
     recurrence: {
       type: String,
-      enum: ['Weekly', 'Biweekly'],
+      enum: ['Weekly', 'Biweekly','Once'],
       default: 'Weekly',
     },
     dueDate: {
